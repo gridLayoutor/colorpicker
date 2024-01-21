@@ -1,0 +1,107 @@
+<html>
+
+<head>
+ <title>カラーピッカー</title>
+ <meta charset="utf-8">
+ <style>
+
+#text{
+ font-size: 500%;
+ font-weight: bold;
+ text-stroke: 1px black;
+ -webkit-text-stroke: 1px black;
+}
+
+span{
+ display: inline-block;
+ width: 3em;
+}
+
+ </style>
+</head>
+
+<body onload="setColorForValue();">
+ <div id="text" style="font-size: 500%; font-weight: bold; text-stroke: 1px black;">text</div>
+ <p><label>色相:<span id="hValue"></span><input id="h" type="range" value="0" min="0" max="360"></label></p>
+ <p><label>彩度:<span id="sValue"></span><input id="s" type="range" value="100" min="0" max="100"></label></p>
+ <p><label>明度:<span id="lValue"></span><input id="l" type="range" value="100" min="0" max="100"></label></p>
+ <p><span>hex</span><span id="hexValue"></span></p>
+ 
+ <script>
+
+const text = document.getElementById("text");
+const hInput = document.getElementById("h");
+const sInput = document.getElementById("s");
+const lInput = document.getElementById("l");
+
+const hValue = document.getElementById("hValue");
+const sValue = document.getElementById("sValue");
+const lValue = document.getElementById("lValue");
+
+const hexValue = document.getElementById("hexValue");
+
+hInput.oninput = setColorForValue;
+sInput.oninput = setColorForValue;
+lInput.oninput = setColorForValue;
+
+
+function setColorForValue() {
+ setColor(hInput.value, sInput.value, lInput.value);
+}
+
+function setColor(h, s, l) {
+ 
+ hValue.innerText = h;
+ sValue.innerText = s;
+ lValue.innerText = l;
+ 
+ var red, green, blue;
+ h = h % 360
+ 
+ if(0 <= h && h < 60) {
+  red = 1;
+  green = h / 60;
+  blue = 0;
+ } else if(60 <= h && h < 120) {
+  red = 1 - (h - 60) / 60;
+  green = 1;
+  blue = 0;
+ } else if(120 <= h && h < 180) {
+  red = 0;
+  green = 1;
+  blue = (h - 120) / 60;
+ } else if(180 <= h && h < 240) {
+  red = 0;
+  green = 1 - (h - 180) / 60;
+  blue = 1;
+ } else if(240 <= h && h < 300) {
+  red = (h - 240) / 60;
+  green = 0;
+  blue = 1;
+ } else if(300 <= h && h < 360) {
+  red = 1;
+  green = 0;
+  blue = 1 - (h - 300) / 60;
+ }
+ 
+ red = (red * (s / 100) + (1 - s / 100)) * (l / 100);
+ green = (green * (s / 100) + (1 - s / 100)) * (l / 100);
+ blue = (blue * (s / 100) + (1 - s / 100)) * (l / 100);
+ 
+ red *= 255;
+ green *= 255;
+ blue *= 255;
+
+ text.style.color = `rgb(${red}, ${green}, ${blue})`;
+ 
+ const redHex = (0 <=red && red < 16) ? "0" + parseInt(red).toString(16) : parseInt(red).toString(16);
+ const greenHex = (0 <=green && green < 16) ? "0" + parseInt(green).toString(16) : parseInt(green).toString(16);
+ const blueHex = (0 <= blue && blue < 16) ? "0" + parseInt(blue).toString(16) : parseInt(blue).toString(16);
+ 
+ hexValue.innerText = `#${redHex}${greenHex}${blueHex}`
+}
+
+ </script>
+</body>
+
+</html>
